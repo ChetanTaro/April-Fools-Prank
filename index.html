@@ -81,9 +81,14 @@
     function speak(text) {
       const speech = new SpeechSynthesisUtterance(text);
       speech.lang = 'en-IN';
-      speech.rate = 1;
-      speech.pitch = 1;
       window.speechSynthesis.speak(speech);
+    }
+
+    function freezeScreen(duration) {
+      const start = Date.now();
+      while (Date.now() - start < duration) {
+        // Intentional freeze loop
+      }
     }
 
     function startPrank() {
@@ -91,7 +96,6 @@
       const popup = document.getElementById('popup');
       popup.style.display = 'flex';
 
-      // Try fullscreen
       if (document.documentElement.requestFullscreen) {
         document.documentElement.requestFullscreen();
       }
@@ -116,12 +120,16 @@
           i++;
         } else {
           clearInterval(interval);
+
+          // 🔥 Freeze screen for 15 seconds
+          msg.innerText = '⚠️ SYSTEM FREEZE DETECTED...';
+          speak('System freeze detected');
+          freezeScreen(15000);
+
           msg.style.display = 'none';
           final.style.display = 'block';
-
           speak("April Fools Nisha Ma'am");
 
-          // Exit fullscreen
           if (document.exitFullscreen) {
             document.exitFullscreen();
           }
