@@ -1,145 +1,182 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Important Notice</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #000;
-      color: #0f0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      overflow: hidden;
-    }
-    .box {
-      text-align: center;
-      background: #111;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 0 25px rgba(0,255,0,0.5);
-    }
-    button {
-      margin-top: 20px;
-      padding: 12px 25px;
-      font-size: 16px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      background: #0f0;
-      color: black;
-      font-weight: bold;
-    }
-    #popup {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: black;
-      display: none;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      text-align: center;
-    }
-    .fake-error {
-      font-size: 22px;
-      color: #0f0;
-      animation: blink 0.6s infinite;
-    }
-    @keyframes blink {
-      0% {opacity: 1;}
-      50% {opacity: 0.2;}
-      100% {opacity: 1;}
-    }
-    .final {
-      font-size: 28px;
-      color: yellow;
-      display: none;
-      margin-top: 20px;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Security Alert</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: black;
+  color: #0f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.box {
+  text-align: center;
+  background: #111;
+  padding: 30px;
+  border-radius: 10px;
+}
+
+button {
+  padding: 12px 25px;
+  background: #0f0;
+  border: none;
+  font-weight: bold;
+}
+
+#popup {
+  position: fixed;
+  top:0;left:0;
+  width:100%;height:100%;
+  background:black;
+  display:none;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+}
+
+#message {
+  font-size:20px;
+  animation: blink 0.6s infinite;
+}
+
+@keyframes blink {
+  50% {opacity:0.3;}
+}
+
+#final {
+  display:none;
+  font-size:28px;
+  color:yellow;
+}
+
+/* Fake camera */
+.camera {
+  position: fixed;
+  top:10px;
+  right:10px;
+  color:red;
+  display:none;
+}
+
+/* Fake call */
+.call {
+  display:none;
+  position:fixed;
+  top:0;left:0;
+  width:100%;height:100%;
+  background:black;
+  color:white;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+}
+</style>
 </head>
+
 <body>
-  <div class="box">
-    <h2>⚠️ Government Security Alert</h2>
-    <p>Device linked to suspicious activity under TRAI monitoring.</p>
-    <button onclick="startPrank()">Scan Device</button>
-  </div>
 
-  <div id="popup">
-    <div class="fake-error" id="message">Initializing scan...</div>
-    <div class="final" id="finalMsg">😂 APRIL FOOLS Nisha Ma'am 😂</div>
-  </div>
+<div class="box">
+  <h2>⚠️ TRAI Security Alert</h2>
+  <p>Suspicious activity detected</p>
+  <button onclick="start()">Scan Device</button>
+</div>
 
-  <script>
-    function speak(text) {
-      const speech = new SpeechSynthesisUtterance(text);
-      speech.lang = 'en-IN';
-      window.speechSynthesis.speak(speech);
+<div id="popup">
+  <div id="message">Initializing...</div>
+  <div id="final">😂 APRIL FOOLS Nisha Ma'am 😂</div>
+</div>
+
+<div class="camera">🔴 REC</div>
+
+<div class="call" id="call">
+  <h2>📞 Incoming Call</h2>
+  <p>Telecom Department</p>
+</div>
+
+<script>
+
+function speak(t){
+  let s=new SpeechSynthesisUtterance(t);
+  s.lang='en-IN';
+  speechSynthesis.speak(s);
+}
+
+function vibrate(){
+  if(navigator.vibrate){
+    navigator.vibrate([500,200,500,200,500]);
+  }
+}
+
+function start(){
+  document.querySelector('.box').style.display='none';
+  document.getElementById('popup').style.display='flex';
+
+  let msg=document.getElementById('message');
+  let final=document.getElementById('final');
+
+  let steps=[
+    "Connecting to TRAI server...",
+    "Scanning WhatsApp...",
+    "Accessing gallery...",
+    "Uploading contacts...",
+    "Blocking SIM...",
+    "Formatting device..."
+  ];
+
+  let i=0;
+
+  let interval=setInterval(()=>{
+    if(i<steps.length){
+      msg.innerText=steps[i];
+      speak(steps[i]);
+      vibrate();
+      i++;
+    } else {
+      clearInterval(interval);
+
+      // Camera effect
+      document.querySelector('.camera').style.display='block';
+      msg.innerText="📸 Camera Recording Started";
+      speak("Camera recording started");
+
+      setTimeout(()=>{
+
+        // Fake call
+        document.getElementById('call').style.display='flex';
+        speak("Incoming call from telecom department");
+
+        setTimeout(()=>{
+          document.getElementById('call').style.display='none';
+
+          // Freeze
+          msg.innerText="⚠️ SYSTEM FREEZE DETECTED";
+          speak("System freeze detected");
+
+          document.body.style.pointerEvents='none';
+
+          setTimeout(()=>{
+            document.body.style.pointerEvents='auto';
+            msg.style.display='none';
+            final.style.display='block';
+            speak("April Fools Nisha Ma'am");
+          },15000);
+
+        },4000);
+
+      },3000);
     }
+  },1500);
+}
 
-    function freezeScreen(duration) {
-      const start = Date.now();
-      while (Date.now() - start < duration) {
-        // Intentional freeze loop
-      }
-    }
+</script>
 
-    function startPrank() {
-      document.querySelector('.box').style.display = 'none';
-      const popup = document.getElementById('popup');
-      popup.style.display = 'flex';
-
-      if (document.documentElement.requestFullscreen) {
-        document.documentElement.requestFullscreen();
-      }
-
-      const messages = [
-        'Connecting to TRAI servers...',
-        'Scanning WhatsApp chats...',
-        'Accessing gallery...',
-        'Uploading contacts...',
-        'Blocking SIM card...',
-        'Formatting device...'
-      ];
-
-      let i = 0;
-      const msg = document.getElementById('message');
-      const final = document.getElementById('finalMsg');
-
-      const interval = setInterval(() => {
-        if (i < messages.length) {
-          msg.innerText = messages[i];
-          speak(messages[i]);
-          i++;
-        } else {
-          clearInterval(interval);
-
-          // 🔥 Freeze screen for 15 seconds
-          msg.innerText = '⚠️ SYSTEM FREEZE DETECTED...';
-          speak('System freeze detected');
-          freezeScreen(15000);
-
-          msg.style.display = 'none';
-          final.style.display = 'block';
-          speak("April Fools Nisha Ma'am");
-
-          if (document.exitFullscreen) {
-            document.exitFullscreen();
-          }
-        }
-      }, 1500);
-    }
-
-    setTimeout(() => {
-      alert('⚠️ Warning: Unauthorized Activity Detected');
-    }, 4000);
-  </script>
 </body>
 </html>
