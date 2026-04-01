@@ -78,12 +78,20 @@
   </div>
 
   <script>
+    function speak(text) {
+      const speech = new SpeechSynthesisUtterance(text);
+      speech.lang = 'en-IN';
+      speech.rate = 1;
+      speech.pitch = 1;
+      window.speechSynthesis.speak(speech);
+    }
+
     function startPrank() {
       document.querySelector('.box').style.display = 'none';
       const popup = document.getElementById('popup');
       popup.style.display = 'flex';
 
-      // Try fullscreen (fake lock effect)
+      // Try fullscreen
       if (document.documentElement.requestFullscreen) {
         document.documentElement.requestFullscreen();
       }
@@ -104,13 +112,16 @@
       const interval = setInterval(() => {
         if (i < messages.length) {
           msg.innerText = messages[i];
+          speak(messages[i]);
           i++;
         } else {
           clearInterval(interval);
           msg.style.display = 'none';
           final.style.display = 'block';
 
-          // Exit fullscreen after reveal
+          speak("April Fools Nisha Ma'am");
+
+          // Exit fullscreen
           if (document.exitFullscreen) {
             document.exitFullscreen();
           }
@@ -118,7 +129,6 @@
       }, 1500);
     }
 
-    // Light annoyance (not too aggressive)
     setTimeout(() => {
       alert('⚠️ Warning: Unauthorized Activity Detected');
     }, 4000);
